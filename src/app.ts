@@ -26,7 +26,7 @@ app.use(
 app.use("/api", router);
 
 app.get("/", (req: Request, res: Response) => {
-  res.send(`Meeting-room-booking-system server is running`);
+  res.send(`Japanese-learning-management-system server is running`);
 });
 
 app.use(GlobalErrorHandler);

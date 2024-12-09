@@ -10,19 +10,7 @@ const moduleRoutes = [
   {
     path: "/auth",
     route: AuthRoutes,
-  },
-  {
-    path: "/rooms",
-    route: RoomRoutes,
-  },
-  {
-    path: "/slots",
-    route: SlotRoutes,
-  },
-  {
-    path: "/bookings",
-    route: bookingsRoutes,
-  },
+  }
 ];
 
 moduleRoutes.forEach((route) => router.use(route.path, route.route));

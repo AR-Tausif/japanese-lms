@@ -13,13 +13,13 @@ const createUser = catchAsync(async (req, res) => {
   sendResponse(res, {
     statusCode: 201,
     success: true,
-    message: "User registered successfully",
+    message: "user registered",
     data: result,
   });
 });
 
 // login user controller function
-const LoginUser = catchAsync(async (req, res) => {
+const loginUser = catchAsync(async (req, res) => {
   const result = await AuthServices.loginUser(req.body);
   const { refreshToken, accessToken, user } = result;
 
@@ -34,7 +34,7 @@ const LoginUser = catchAsync(async (req, res) => {
   sendResponse(res, {
     statusCode: httpStatus.OK,
     success: true,
-    message: "User is logged in succesfully!",
+    message: "user logged in",
     data: {
       token: accessToken,
       user,
@@ -44,5 +44,5 @@ const LoginUser = catchAsync(async (req, res) => {
 
 export const AuthController = {
   createUser,
-  LoginUser,
+  loginUser,
 };
