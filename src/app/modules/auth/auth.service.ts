@@ -29,7 +29,6 @@ const createUserIntoDB = async (user: Partial<TUser>) => {
     email,
     password,
     photo,
-    role:"admin"
   });
   return {
     name: result?.name,
