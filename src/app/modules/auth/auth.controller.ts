@@ -8,8 +8,13 @@ import sendResponse from "../../utils/sendResponse";
 
 // signup user controller function
 const createUser = catchAsync(async (req, res) => {
-  const user = req.body;
-  const result = await AuthServices.createUserIntoDB(user);
+  const {name, email, password, photo} = req.body;
+  const result = await AuthServices.createUserIntoDB({
+    name, 
+    email,
+    password,
+    photo
+  });
   sendResponse(res, {
     statusCode: 201,
     success: true,
@@ -41,8 +46,22 @@ const loginUser = catchAsync(async (req, res) => {
     },
   });
 });
+// get current logged in user controller function
+const getCurrentUser = catchAsync(async (req, res) => {
+  const userId  = req?.user?.userId
+  const result = await AuthServices.getCurrentUser(userId);
+
+  
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: "retrived current user details",
+    data: result
+  });
+});
 
 export const AuthController = {
   createUser,
   loginUser,
+  getCurrentUser
 };

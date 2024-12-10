@@ -13,8 +13,9 @@ import userModel from "../users/users.model";
 import { TUser } from "../users/users.interface";
 import comparedHashedText from "../../helper/compareHashedText";
 
-const createUserIntoDB = async (user: TUser) => {
-  const { name, email, password, role, phone, address } = user;
+
+const createUserIntoDB = async (user: Partial<TUser>) => {
+  const { name, email, password, photo } = user;
   const isExistUser = await userModel.findOne({ email: user.email });
 
   // checking user that is not exist on database
@@ -27,16 +28,19 @@ const createUserIntoDB = async (user: TUser) => {
     name,
     email,
     password,
-    phone,
-    role,
-    address,
+    photo,
+    role:"admin"
   });
-  return result;
+  return {
+    name: result?.name,
+    email: result?.email,
+    photo: result?.photo,
+    role: result?.role
+  };
 };
-
 const loginUser = async (payload: TUser) => {
   const { email, password } = payload;
-
+  
   // here finding the user record on database and also getting password with '+(operator)password'
   const user = await userModel
     .findOne({
@@ -50,10 +54,10 @@ const loginUser = async (payload: TUser) => {
   }
 
   // also checking user deleted or not
-  const isDeleted = user.isDeleted;
-  if (isDeleted) {
-    throw new AppError(httpStatus.FORBIDDEN, "user already deleted!");
-  }
+  // const isDeleted = user.isDeleted;
+  // if (isDeleted) {
+  //   throw new AppError(httpStatus.FORBIDDEN, "user already deleted!");
+  // }
 
   // checking the plaintext password is correct or not
   const hashedPassword = await comparedHashedText(password, user.password);
@@ -69,7 +73,7 @@ const loginUser = async (payload: TUser) => {
   // defined a object for storing jwt payload in token
   const jwtPayload = {
     userId: user.id,
-    role: user.role || "volunteer",
+    role: user.role || "user",
   };
 
   // access token creating with utils function
@@ -78,7 +82,7 @@ const loginUser = async (payload: TUser) => {
     config.jwt_access_secret as string,
     config.jwt_Access_Expires_in as string
   );
-
+  
   // refresh token creating with utils function
   const refreshToken = createToken(
     jwtPayload,
@@ -93,14 +97,25 @@ const loginUser = async (payload: TUser) => {
       _id: user._id,
       name: user.name,
       email: user.email,
-      phone: user.phone,
       role: user.role,
-      address: user.address,
+      photo: user.photo
     },
   };
+};
+
+const getCurrentUser = async (userId:string) => {
+  const user = await userModel.findById(userId);
+
+  // checking user that is not exist on database
+  if (!user) {
+    throw new AppError(httpStatus.BAD_REQUEST, "user not found");
+  }
+
+  return user
 };
 
 export const AuthServices = {
   createUserIntoDB,
   loginUser,
+  getCurrentUser
 };
