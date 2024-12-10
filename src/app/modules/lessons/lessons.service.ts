@@ -14,20 +14,21 @@ const createNewLesson = async (payload: TLesson) => {
 }
 
 const getAllLessons = async () => {
-    const result = await lessonsModel.find({isDeleted:false})
+    const result = await lessonsModel.find({ isDeleted: false })
     return result;
 }
-const getSingleLessonById = async (lessonId:string) => {
+const getSingleLessonById = async (lessonId: string) => {
     const result = await lessonsModel.findById(lessonId)
-    if(result?.isDeleted) throw new AppError(httpStatus.NOT_FOUND, "lesson was deleted")
+    if (result?.isDeleted) throw new AppError(httpStatus.NOT_FOUND, "lesson was deleted")
     return result;
 }
-const updateSingleLessonById = async (lessonId:string, payload:Partial<TLesson>) => {
-    const result = await lessonsModel.findByIdAndUpdate(lessonId, payload, {new:true})
+const updateSingleLessonById = async (lessonId: string, payload: Partial<TLesson>) => {
+    const result = await lessonsModel.findByIdAndUpdate(lessonId, { name: payload.name, lessonNumber: payload.lessonNumber }, { new: true })
     return result;
 }
-const deleteSingleLessonById = async (lessonId:string) => {
-    const result = await lessonsModel.findByIdAndUpdate(lessonId, {isDeleted: true}, {new:true})
+const deleteSingleLessonById = async (lessonId: string) => {
+    // handle soft deletion here
+    const result = await lessonsModel.findByIdAndUpdate(lessonId, { isDeleted: true }, { new: true })
     return result;
 }
 
@@ -35,5 +36,7 @@ const deleteSingleLessonById = async (lessonId:string) => {
 export const LessonServices = {
     createNewLesson,
     getAllLessons,
-    getSingleLessonById
+    getSingleLessonById,
+    updateSingleLessonById,
+    deleteSingleLessonById
 }

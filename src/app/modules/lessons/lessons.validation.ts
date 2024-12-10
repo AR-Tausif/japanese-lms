@@ -1,21 +1,20 @@
 import { z } from "zod";
 
-const userSchema = z.object({
+const lessonSchema = z.object({
   body: z.object({
-    name: z.string(),
-    email: z.string().email(),
-    password: z.string(),
-    photo: z.string().optional(),
+    name:z.string(),
+    lessonNumber: z.string()
     }),
 });
-const loginSchema = z.object({
+const updateLessonSchema = z.object({
   body: z.object({
-    email: z.string().email(),
-    password: z.string(),
+    name:z.string().optional(),
+    lessonNumber: z.string().optional()
+    
   }),
 })
 
-export const userValidations = {
-  userSchema,
-  loginSchema
+export const lessonValidations = {
+  lessonSchema,
+  updateLessonSchema
 };
